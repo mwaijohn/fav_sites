@@ -29,27 +29,35 @@ class SiteCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        data.name,
-                        style: TextStyle(
-                            letterSpacing: 1.3,
-                            fontSize: 24.0,
-                            fontWeight: FontWeight.bold
+                  GestureDetector(
+                    onTap: (){
+                      Navigator.pushNamed(context, "/viewsite",arguments: {
+                        "title": data.name,
+                        "link": data.link
+                      });
+                    },
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                       Text(
+                          data.name,
+                          style: TextStyle(
+                              letterSpacing: 1.3,
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.bold
+                          ),
                         ),
-                      ),
-                      Text(
-                        data.link,
-                        style: TextStyle(
-                            letterSpacing: 1.3,
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.normal,
-                            color: Colors.blue
+                        Text(
+                          data.link,
+                          style: TextStyle(
+                              letterSpacing: 1.3,
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.normal,
+                              color: Colors.blue
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                   GestureDetector(
                     onTap: delete,

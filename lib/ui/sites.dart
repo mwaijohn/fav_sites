@@ -15,6 +15,61 @@ class _SitesState extends State<Sites> {
 
   Database db;
 
+  void _showDialog(context,id){
+    showDialog(
+        context: context,
+      builder: (BuildContext context){
+          return AlertDialog(
+            backgroundColor: Colors.black,
+            contentTextStyle: TextStyle(
+              color: Colors.white,
+              fontSize: 18.0,
+              fontWeight: FontWeight.normal
+            ),
+            titleTextStyle: TextStyle(
+                color: Colors.white,
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold
+            ),
+            title: Text("Delete item"),
+            content: Text("Are you sure to delete this item?"),
+            actions: <Widget>[
+              GestureDetector(
+                onTap: (){
+                  Data data = Data();
+                  data.deleteSite(db,id);
+                  Navigator.of(context,rootNavigator: true).pop();
+                },
+                child: Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text("Delete",
+                  style: TextStyle(
+                    letterSpacing: 1.2,
+                    color: Colors.red,
+                    fontSize: 16.0
+                  ),),
+                ),
+              ),
+              GestureDetector(
+                onTap: (){
+                  Navigator.of(context,rootNavigator: true).pop();
+                },
+                child: Padding(
+                  padding: EdgeInsets.all(8.0),
+                    child: Text("cancel",
+                      style: TextStyle(
+                          letterSpacing: 1.2,
+                          color: Colors.red,
+                          fontSize: 16.0
+                      ),
+                    )),
+              )
+            ],
+          );
+      }
+    );
+  }
+
   @override
   void initState(){
     super.initState();
@@ -47,11 +102,12 @@ class _SitesState extends State<Sites> {
             itemBuilder: (context,position){
               return SiteCard(data: storedSites[position],delete: (){
                 print(storedSites[position].id);
-                Data data = Data();
-                data.deleteSite(db,storedSites[position].id);
+//                Data data = Data();
+//                data.deleteSite(db,storedSites[position].id);
                 setState(() {
-                  storedSites.remove(position);
+                  storedSites.remove(position,);
                 });
+             _showDialog(context,storedSites[position].id);
               },);
             },
             itemCount: storedSites.length,
