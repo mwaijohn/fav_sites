@@ -1,5 +1,7 @@
+import 'package:fav_sites/ui/loading_screen.dart';
 import 'package:fav_sites/ui/view_site.dart';
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
 import 'ui/home.dart';
 import 'ui/sites.dart';
 
@@ -11,11 +13,12 @@ void main() {
       visualDensity: VisualDensity.adaptivePlatformDensity,
       primaryColor: Colors.blue,
     ),
-    initialRoute: "/home",
+    initialRoute: "/loading",
     routes: {
       "/home": (context) => Home(),
       "/sites": (context) => Sites(),
-      "/viewsite": (context) => ViewSite()
+      "/viewsite": (context) => ViewSite(),
+      "/loading": (context) => LoadingScreen()
     },
   ));
 }

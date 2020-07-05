@@ -1,5 +1,6 @@
 import 'package:fav_sites/persistence/DataModel.dart';
 import 'package:fav_sites/persistence/Db.dart';
+import 'package:fav_sites/persistence/connection.dart';
 import 'package:fav_sites/ui/site_card.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
@@ -13,7 +14,19 @@ class _SitesState extends State<Sites> {
   Map sites = {};
   List<Data> data;
 
-  Database db;
+  Database db,dbConnection;
+
+  getDatabaseConnection() async{
+    DatabaseConnection db = DatabaseConnection();
+    dbConnection =  await db.dataBaseConnection();
+    return dbConnection;
+  }
+
+  //get list of data
+  getData() async{
+    var data =  Data();
+    return await data.sites(dbConnection);
+  }
 
   void _showDialog(context,id){
     showDialog(
@@ -73,9 +86,11 @@ class _SitesState extends State<Sites> {
   @override
   void initState(){
     super.initState();
-    Db.init();
-    db = Db.connection;
-    print(db);
+//    Db.init();
+//    db = Db.connection;
+    getDatabaseConnection();
+    getData();
+    print(dbConnection);
   }
 
   @override
@@ -112,7 +127,11 @@ class _SitesState extends State<Sites> {
             },
             itemCount: storedSites.length,
           )
-        )
+        ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: null,
+        child: Icon(Icons.add),
+      ),
     );
   }
 }
