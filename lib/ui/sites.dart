@@ -11,22 +11,20 @@ class Sites extends StatefulWidget {
 }
 
 class _SitesState extends State<Sites> {
-  Map sites = {};
   List<Data> data;
+  var storedSites;
 
-  Database db,dbConnection;
-
-  getDatabaseConnection() async{
-    DatabaseConnection db = DatabaseConnection();
-    dbConnection =  await db.dataBaseConnection();
-    return dbConnection;
-  }
-
-  //get list of data
+  //get future list of data
   getData() async{
     var data =  Data();
-    return await data.sites(dbConnection);
+    var sdd = await data.sites(Db.connection);
+    print("##################");
+    print(sdd.runtimeType);
+    print("##################");
+    storedSites = sdd;
+    return sdd;
   }
+
 
   void _showDialog(context,id){
     showDialog(
@@ -36,6 +34,8 @@ class _SitesState extends State<Sites> {
             backgroundColor: Colors.black,
             contentTextStyle: TextStyle(
               color: Colors.white,
+
+
               fontSize: 18.0,
               fontWeight: FontWeight.normal
             ),
@@ -50,7 +50,7 @@ class _SitesState extends State<Sites> {
               GestureDetector(
                 onTap: (){
                   Data data = Data();
-                  data.deleteSite(db,id);
+                  data.deleteSite(Db.connection,id);
                   Navigator.of(context,rootNavigator: true).pop();
                 },
                 child: Padding(
@@ -86,19 +86,17 @@ class _SitesState extends State<Sites> {
   @override
   void initState(){
     super.initState();
-//    Db.init();
-//    db = Db.connection;
-    getDatabaseConnection();
+    print(Db.connection);
     getData();
-    print(dbConnection);
+    print(storedSites.runtimeType);
   }
 
   @override
   Widget build(BuildContext context) {
 
-    sites = ModalRoute.of(context).settings.arguments;
+    //sites = ModalRoute.of(context).settings.arguments;
 
-    var storedSites = sites['sites'];
+    //var storedSites = sites['sites'];
     //print(sites['sites']);
     //print(storedSites[0].id);
     //print(storedSites.runtimeType);
@@ -113,23 +111,40 @@ class _SitesState extends State<Sites> {
       ),
       body: Padding(
         padding: EdgeInsets.fromLTRB(0, 10.0, 0, 0),
-          child: ListView.builder(
-            itemBuilder: (context,position){
-              return SiteCard(data: storedSites[position],delete: (){
-                print(storedSites[position].id);
-//                Data data = Data();
-//                data.deleteSite(db,storedSites[position].id);
-                setState(() {
-                  storedSites.remove(position,);
-                });
-             _showDialog(context,storedSites[position].id);
-              },);
-            },
-            itemCount: storedSites.length,
+          child: FutureBuilder<dynamic>(
+            future: getData(),
+              builder: (BuildContext context,AsyncSnapshot snapshot){
+                switch(snapshot.connectionState){
+                  case ConnectionState.none: return Text("Connecting");
+                  case ConnectionState.waiting: return Text("Waiting results");
+                  default:
+                    if(snapshot.hasError){
+                      return Text("Error happened:");
+                    }else{
+                      return ListView.builder(
+                        itemBuilder: (context,position){
+                          return SiteCard(data: snapshot.data[position],delete: (){
+                            //print(storedSites[position].id);
+                            setState(() {
+                              storedSites.remove(position,);
+                            });
+                            _showDialog(context,snapshot.data[position].id);
+                          },);
+                        },
+                        itemCount: snapshot.data.length,
+                      );
+                    }
+                }
+              }
           )
         ),
       floatingActionButton: FloatingActionButton(
-        onPressed: null,
+        onPressed: () async{
+          await Navigator.pushNamed(context, "/home");
+          this.setState(() {
+
+          });
+        },
         child: Icon(Icons.add),
       ),
     );

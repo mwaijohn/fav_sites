@@ -92,14 +92,19 @@ class _HomeState extends State<Home> {
               controller: linkController,
             ),
             RaisedButton(
-              child: Text("Go to main"),
+              child: Text("Save"),
               onPressed: () async {
-                sitesData = await getData();
-                Navigator.pushNamed(context, "/sites",arguments: {
-                  "sites": sitesData,
-                });
-                print(sitesData);
-                print("$db gfgfgfg");
+                saveData();
+                key.currentState.showSnackBar(
+                    SnackBar(
+                      content: Text("site added"),
+                      action: SnackBarAction(label: "Ok",
+                          onPressed: (){
+                        Navigator.pop(context);
+                          }
+                      ),
+                    )
+                );
               },
             )
           ],
