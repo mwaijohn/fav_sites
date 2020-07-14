@@ -106,7 +106,7 @@ class _SitesState extends State<Sites> {
       appBar: AppBar(
         backgroundColor: Colors.blue[900],
         title: Text("Favourite sites"),
-        centerTitle: true,
+        centerTitle: false,
         elevation: 0,
       ),
       body: Padding(
